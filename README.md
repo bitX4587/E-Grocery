@@ -1,6 +1,6 @@
 ## 📦 What's Included
 
-**Modern E-Grocery Store** (`e-grocery.html`)
+**Modern E-Grocery Store** (`https://github.com/bitX4587/E-Grocery`)
 
 A complete e-commerce grocery shopping experience.
 
