@@ -3,133 +3,207 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>E-Grocery Store</title>
+    <title>FreshNest — E-Grocery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <link rel="stylesheet" href="style.css" />
-    <script src="index.js"></script>
   </head>
   <body>
-    <div class="header">
-      <h1><i class="fas fa-shopping-basket"></i> E-Grocery Store</h1>
-      <button class="cart-btn" onclick="toggleCart()">
-        <i class="fas fa-shopping-cart"></i>
-        <span>Cart</span>
-        <span class="cart-count" id="cartCount">0</span>
-      </button>
-    </div>
-
-    <div class="search-bar">
-      <input
-        type="text"
-        class="search-input"
-        id="searchInput"
-        placeholder="Search for products..."
-        onkeyup="filterProducts()"
-      />
-    </div>
-
-    <div class="product-grid" id="productGrid"></div>
-
-    <div class="cart-modal" id="cartModal">
-      <div class="cart-content">
-        <div class="cart-header">
-          <h2><i class="fas fa-shopping-cart"></i> Your Cart</h2>
-          <button class="close-btn" onclick="toggleCart()">×</button>
+    <header class="header">
+      <div class="header-brand">
+        <span class="brand-icon">🌿</span>
+        <span class="brand-name">FreshNest</span>
+      </div>
+      <div class="header-right">
+        <div class="search-wrap">
+          <i class="fas fa-search search-icon"></i>
+          <input
+            type="text"
+            id="searchInput"
+            class="search-input"
+            placeholder="Search products…"
+            onkeyup="filterProducts()"
+          />
         </div>
-        <div id="cartItems"></div>
-        <div class="cart-total" id="cartTotal" style="display: none">
-          <span>Total:</span>
-          <span id="totalPrice">$0.00</span>
-        </div>
-        <button
-          class="checkout-btn"
-          id="checkoutBtn"
-          style="display: none"
-          onclick="checkout()"
-        >
-          <i class="fas fa-credit-card"></i> Proceed to Checkout
+        <button class="cart-btn" onclick="toggleCart()">
+          <i class="fas fa-basket-shopping"></i>
+          <span class="cart-label">Cart</span>
+          <span class="cart-badge" id="cartCount">0</span>
         </button>
       </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-text">
+        <h1>Fresh from the<br /><em>farm to you</em></h1>
+        <p>Premium egg dishes & wholesome ingredients, delivered with care.</p>
+      </div>
+      <div class="hero-art">🥚🍳🥗</div>
+    </section>
+
+    <div class="categories" id="categories"></div>
+    <main class="product-grid" id="productGrid"></main>
+
+    <div
+      class="cart-overlay"
+      id="cartModal"
+      onclick="handleOverlayClick(event)"
+    >
+      <aside class="cart-panel">
+        <div class="cart-header">
+          <h2><i class="fas fa-basket-shopping"></i> Your Cart</h2>
+          <button class="close-btn" onclick="toggleCart()">
+            <i class="fas fa-xmark"></i>
+          </button>
+        </div>
+        <div class="cart-body" id="cartItems"></div>
+        <div class="cart-footer" id="cartFooter" style="display: none">
+          <div class="cart-total-row">
+            <span>Subtotal</span>
+            <span id="totalPrice">$0.00</span>
+          </div>
+          <div class="cart-total-row grand">
+            <span>Delivery</span>
+            <span class="free-tag">FREE</span>
+          </div>
+          <button class="checkout-btn" onclick="checkout()">
+            <i class="fas fa-credit-card"></i> Checkout
+          </button>
+        </div>
+      </aside>
     </div>
 
+    <div class="toast" id="toast"></div>
+
+    <script src="index.js"></script>
     <script>
+      // Direct permanent Unsplash image URLs — no API key needed, always work
       const products = [
         {
           id: 1,
           name: "Poached Eggs",
-          icon: "🥚",
+          category: "Classic",
           price: 4.99,
-          description: "Fresh organic eggs, perfectly poached",
+          description:
+            "Fresh organic eggs, delicately poached to silky perfection.",
+          img: "https://images.unsplash.com/photo-1607532941433-304659e8198a?w=400&h=300&fit=crop",
+          fallback: "🥚",
         },
         {
           id: 2,
           name: "Boiled Eggs",
-          icon: "🥚",
+          category: "Classic",
           price: 3.99,
-          description: "Hard-boiled eggs, ready to eat",
+          description: "Hard-boiled eggs, protein-packed and ready to eat.",
+          img: "https://images.unsplash.com/photo-1587486913049-53fc88980cfc?w=400&h=300&fit=crop",
+          fallback: "🥚",
         },
         {
           id: 3,
           name: "Scrambled Eggs",
-          icon: "🍳",
+          category: "Cooked",
           price: 5.99,
-          description: "Fluffy scrambled eggs with herbs",
+          description: "Fluffy scrambled eggs with fresh herbs and cream.",
+          img: "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=400&h=300&fit=crop",
+          fallback: "🍳",
         },
         {
           id: 4,
           name: "Adobo Eggs",
-          icon: "🥚",
+          category: "Special",
           price: 6.99,
-          description: "Filipino-style marinated eggs",
+          description: "Filipino-style marinated eggs in rich adobo sauce.",
+          img: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&h=300&fit=crop",
+          fallback: "🥚",
         },
         {
           id: 5,
           name: "Deviled Eggs",
-          icon: "🥚",
+          category: "Special",
           price: 7.99,
-          description: "Classic deviled eggs with paprika",
+          description: "Classic deviled eggs topped with smoked paprika.",
+          img: "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=400&h=300&fit=crop",
+          fallback: "🥚",
         },
         {
           id: 6,
           name: "Egg Salad",
-          icon: "🥗",
+          category: "Salads",
           price: 8.99,
-          description: "Creamy egg salad sandwich filling",
+          description: "Creamy egg salad with Dijon mustard and chives.",
+          img: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&h=300&fit=crop",
+          fallback: "🥗",
         },
         {
           id: 7,
           name: "Fried Eggs",
-          icon: "🍳",
+          category: "Cooked",
           price: 4.49,
-          description: "Sunny-side up perfection",
+          description: "Sunny-side up, crispy edges, runny golden yolk.",
+          img: "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?w=400&h=300&fit=crop",
+          fallback: "🍳",
         },
         {
           id: 8,
           name: "Omelet",
-          icon: "🍳",
+          category: "Cooked",
           price: 9.99,
-          description: "Loaded veggie omelet",
+          description: "Loaded veggie omelet with peppers, onions & cheese.",
+          img: "https://images.unsplash.com/photo-1510693206972-df098062cb71?w=400&h=300&fit=crop",
+          fallback: "🍳",
         },
         {
           id: 9,
-          name: "Egg Benedict",
-          icon: "🍳",
+          name: "Eggs Benedict",
+          category: "Special",
           price: 12.99,
-          description: "Classic eggs benedict with hollandaise",
+          description: "Classic eggs benedict with velvety hollandaise sauce.",
+          img: "https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=400&h=300&fit=crop",
+          fallback: "🍳",
+        },
+        {
+          id: 10,
+          name: "Shakshuka",
+          category: "Special",
+          price: 11.99,
+          description:
+            "Spiced tomato sauce with poached eggs, Middle-Eastern style.",
+          img: "https://images.unsplash.com/photo-1590412200988-a436970781fa?w=400&h=300&fit=crop",
+          fallback: "🍳",
+        },
+        {
+          id: 11,
+          name: "Egg Fried Rice",
+          category: "Cooked",
+          price: 8.49,
+          description: "Wok-tossed jasmine rice with egg, scallions & soy.",
+          img: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400&h=300&fit=crop",
+          fallback: "🍚",
+        },
+        {
+          id: 12,
+          name: "Caesar Salad",
+          category: "Salads",
+          price: 10.99,
+          description:
+            "Romaine, parmesan, croutons & signature caesar dressing.",
+          img: "https://images.unsplash.com/photo-1512852939750-1305098529bf?w=400&h=300&fit=crop",
+          fallback: "🥗",
         },
       ];
-      // Close modal when clicking outside
-      document.getElementById("cartModal").addEventListener("click", (e) => {
-        if (e.target.id === "cartModal") {
-          toggleCart();
-        }
-      });
 
-      // Initialize
-      renderProducts();
+      document
+        .getElementById("cartModal")
+        .addEventListener("click", handleOverlayClick);
+      init();
     </script>
   </body>
 </html>
